@@ -477,8 +477,8 @@ public abstract class NanoHTTPD {
         private final List<TempFile> tempFiles;
 
         public DefaultTempFileManager() {
-            //tmpdir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath();//System.getProperty("java.io.tmpdir");
-        	tmpdir = System.getProperty("java.io.tmpdir");
+            tmpdir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath();//System.getProperty("java.io.tmpdir");
+        	//tmpdir = System.getProperty("java.io.tmpdir");
             
         	tempFiles = new ArrayList<TempFile>();
         }

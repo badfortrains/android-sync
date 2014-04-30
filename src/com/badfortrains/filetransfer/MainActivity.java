@@ -2,6 +2,8 @@ package com.badfortrains.filetransfer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -44,7 +46,7 @@ public class MainActivity extends ListActivity
 
 	private static final String TAG = "FileTest";
 	private WebServer server;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,15 +69,6 @@ public class MainActivity extends ListActivity
 
 		Log.v(TAG, "STARTING");
 		
-		Uri uri = Uri.parse("content://media/external/file/1437");
-		Cursor musiccursor = managedQuery(uri, null, null, null, null);
-
-		if (musiccursor.moveToFirst()) {
-		    String title; 
-		    int titleColumn = musiccursor.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE); 
-		    title = musiccursor.getString(titleColumn);
-		    Log.v(TAG,"FOUND IT is music? "+title);
-		}   
 		
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
@@ -160,12 +153,12 @@ public class MainActivity extends ListActivity
 //                sendBroadcast(intent);	
             	File file = new File(path);
             	File sd=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
-            	File dest = new File(sd, "test");
+            	File dest = new File(sd, "test.mp3");
             	boolean success = file.renameTo(dest);
             	file = dest;
             	Log.v(TAG,"FILE IS " + file.length());
             	Log.v(TAG,"RENAME IS " + success);
-            	Log.v(TAG,new File(sd, "test").getPath());
+            	Log.v(TAG,new File(sd, "test.mp3").getPath());
             	   MediaScannerConnection.scanFile(getApplicationContext(),
             		          new String[] { file.toString() }, new String[] {"audio/*"},
             		          new MediaScannerConnection.OnScanCompletedListener() {
