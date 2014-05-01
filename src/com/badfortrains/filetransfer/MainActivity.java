@@ -31,12 +31,17 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends ListActivity 
 		implements LoaderManager.LoaderCallbacks<Cursor> {
 
 	// This is the Adapter being used to display the list's data
 	SimpleCursorAdapter mAdapter;
 
+    String musicJSON = "";
 	// These are the Contacts rows that we will retrieve
 	static final String[] PROJECTION = new String[] {
 		MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE };
@@ -68,7 +73,7 @@ public class MainActivity extends ListActivity
 												// simple_list_item_1
 
 		Log.v(TAG, "STARTING");
-		
+        musicJSON();
 		
 		// Create an empty adapter we will use to display the loaded data.
 		// We pass null for the cursor, then update it in onLoadFinished()
@@ -89,7 +94,37 @@ public class MainActivity extends ListActivity
         }
         Log.w("Httpd", "Web server initialized.");
 	}
-	
+
+
+    private void musicJSON(){
+        Uri contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String[] proj = {
+                MediaStore.Audio.AudioColumns._ID,
+                MediaStore.Audio.AudioColumns.TITLE,
+                MediaStore.Audio.AudioColumns.TRACK,
+                MediaStore.Audio.AudioColumns.ARTIST,
+                MediaStore.Audio.AudioColumns.ALBUM
+        };
+        String select = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+        JSONArray result = new JSONArray();
+        Cursor cursor = getContentResolver().query(contentUri, proj, select, null, null);
+        while(cursor.moveToNext()){
+            JSONObject item = new JSONObject();
+            try{
+                item.put("id",cursor.getString(0));
+                item.put("title",cursor.getString(1));
+                item.put("track",cursor.getString(2));
+                item.put("artist",cursor.getString(3));
+                item.put("album",cursor.getString(4));
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
+            result.put(item);
+            musicJSON = result.toString();
+        }
+
+    }
+
     @Override
     public void onDestroy()
     {
@@ -171,7 +206,7 @@ public class MainActivity extends ListActivity
 
             	
             
-			return new Response(Status.OK,MIME_HTML, "<html><body><form name='up' method='post' enctype='multipart/form-data'><input type='file' name='file' /><br /><input type='submit'name='submit' value='Upload'/></form></body></html>");
+			return new Response(Status.OK,MIME_HTML, "<html><body><form name='up' method='post' enctype='multipart/form-data'><input type='file' name='file' /><br /><input type='submit'name='submit' value='Upload'/></form>"+musicJSON+"</body></html>");
         }
     }
 }
